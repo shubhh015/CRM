@@ -10,7 +10,7 @@ const GoogleLoginPage = () => {
     const responseGoogle = (response) => {
         if (response?.credential) {
             axios
-                .post("http://localhost:8000/auth/google", {
+                .post("https://crm-backend-uqvh.onrender.com/auth/google", {
                     token: response.credential,
                 })
                 .then((res) => {
