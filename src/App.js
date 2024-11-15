@@ -1,25 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import {
+    Navigate,
+    Route,
+    BrowserRouter as Router,
+    Routes,
+} from "react-router-dom";
+import Navbar from "./components/Navbar";
+import PrivateRoute from "./components/PrivateRoute";
+import Campaigns from "./pages/Campaigns";
+import Dashboard from "./pages/Dashboard";
+import GoogleLoginPage from "./pages/GoogleLoginPage";
+import SegmentManager from "./pages/Segments";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [auth, setAuth] = useState(false);
+    useEffect(() => {
+        if (localStorage.getItem("authToken")) {
+            setAuth(true);
+        }
+    }, [localStorage.getItem("authToken")]);
+    return (
+        <Router>
+            {auth && <Navbar />}
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        auth ? (
+                            <Navigate to="/dashboard" />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+
+                <Route path="/login" element={<GoogleLoginPage />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <PrivateRoute>
+                            <Dashboard />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/segment"
+                    element={
+                        <PrivateRoute>
+                            <SegmentManager />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/campaigns"
+                    element={
+                        <PrivateRoute>
+                            <Campaigns />
+                        </PrivateRoute>
+                    }
+                />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
