@@ -14,11 +14,12 @@ import SegmentManager from "./pages/Segments";
 
 const App = () => {
     const [auth, setAuth] = useState(false);
+
     useEffect(() => {
-        if (localStorage.getItem("authToken")) {
-            setAuth(true);
-        }
-    }, [localStorage.getItem("authToken")]);
+        const token = localStorage.getItem("authToken");
+        setAuth(!!token);
+    }, []);
+
     return (
         <Router>
             {auth && <Navbar />}
