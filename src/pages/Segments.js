@@ -357,42 +357,150 @@ const SegmentManager = () => {
                 <Modal open={openForm} onClose={() => setOpenForm(false)}>
                     <Box
                         sx={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            backgroundColor: "#fff",
-                            padding: 3,
-                            borderRadius: 2,
-                            boxShadow: 24,
-                            width: 400,
+                            padding: 4,
+                            margin: "auto",
+                            maxWidth: 600,
+                            backgroundColor: "white",
+                            marginTop: "5%",
                         }}
                     >
-                        <Typography variant="h6" gutterBottom>
-                            {editingSegment ? "Edit Segment" : "Create Segment"}
+                        <Typography variant="h6">
+                            {editingSegment
+                                ? "Edit Segment"
+                                : "Create New Segment"}
                         </Typography>
                         <TextField
-                            label="Segment Name"
-                            variant="outlined"
                             fullWidth
+                            label="Segment Name"
                             value={segmentName}
                             onChange={(e) => setSegmentName(e.target.value)}
-                            sx={{ marginBottom: 2 }}
+                            sx={{ marginY: 2 }}
                         />
-                        {/* Add form elements for conditions and logic */}
+
+                        {groups.map((group, groupIndex) => (
+                            <Box key={groupIndex} sx={{ marginBottom: 2 }}>
+                                <FormControl fullWidth>
+                                    <InputLabel>Group Logic</InputLabel>
+                                    <Select
+                                        value={group.logic}
+                                        onChange={(e) =>
+                                            handleGroupLogicChange(
+                                                groupIndex,
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <MenuItem value="AND">AND</MenuItem>
+                                        <MenuItem value="OR">OR</MenuItem>
+                                    </Select>
+                                </FormControl>
+
+                                {group.conditions.map(
+                                    (condition, conditionIndex) => (
+                                        <Box
+                                            key={conditionIndex}
+                                            sx={{ display: "flex", gap: 2 }}
+                                        >
+                                            <TextField
+                                                label="Field"
+                                                value={condition.field}
+                                                onChange={(e) =>
+                                                    handleConditionChange(
+                                                        groupIndex,
+                                                        conditionIndex,
+                                                        "field",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <TextField
+                                                label="Operator"
+                                                value={condition.operator}
+                                                onChange={(e) =>
+                                                    handleConditionChange(
+                                                        groupIndex,
+                                                        conditionIndex,
+                                                        "operator",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <TextField
+                                                label="Value"
+                                                value={condition.value}
+                                                onChange={(e) =>
+                                                    handleConditionChange(
+                                                        groupIndex,
+                                                        conditionIndex,
+                                                        "value",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <IconButton
+                                                onClick={() =>
+                                                    handleRemoveCondition(
+                                                        groupIndex,
+                                                        conditionIndex
+                                                    )
+                                                }
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
+                                    )
+                                )}
+
+                                <Box sx={{ display: "flex", gap: 2 }}>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() =>
+                                            handleAddCondition(groupIndex)
+                                        }
+                                        sx={{ marginY: 2 }}
+                                    >
+                                        Add Condition
+                                    </Button>
+                                    <IconButton
+                                        onClick={() =>
+                                            handleRemoveGroup(groupIndex)
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        ))}
+
                         <Button
-                            fullWidth
                             variant="contained"
                             color="primary"
-                            onClick={createOrUpdateSegment}
-                            disabled={loadingSegmentAction}
+                            onClick={handleAddGroup}
                         >
-                            {loadingSegmentAction ? (
-                                <CircularProgress size={24} />
-                            ) : (
-                                "Save Segment"
-                            )}
+                            Add Group
                         </Button>
+
+                        <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => setOpenForm(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={createOrUpdateSegment}
+                                disabled={loadingSegmentAction}
+                            >
+                                Save
+                                {loadingSegmentAction ? (
+                                    <CircularProgress size={24} />
+                                ) : (
+                                    "Save"
+                                )}
+                            </Button>
+                        </Box>
                     </Box>
                 </Modal>
 
