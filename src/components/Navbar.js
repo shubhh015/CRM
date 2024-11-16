@@ -22,7 +22,14 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="sticky" component="nav" color="inherit">
+        <AppBar
+            position="sticky"
+            component="nav"
+            color="inherit"
+            sx={{
+                display: localStorage.getItem("authToken") ? "block" : "none",
+            }}
+        >
             <Container maxWidth="2xl">
                 <Toolbar disableGutters>
                     <Typography

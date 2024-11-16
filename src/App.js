@@ -18,7 +18,7 @@ const App = () => {
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         setAuth(!!token);
-    }, []);
+    }, [auth]);
 
     return (
         <Router>
