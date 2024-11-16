@@ -488,7 +488,6 @@ const SegmentManager = () => {
                                                     Value
                                                 </Typography>
                                                 <TextField
-                                                    label="Value"
                                                     value={condition.value}
                                                     onChange={(e) =>
                                                         handleConditionChange(
