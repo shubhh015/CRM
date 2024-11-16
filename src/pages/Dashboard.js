@@ -143,7 +143,6 @@ const Dashboard = () => {
                                                 p: 3,
                                                 textAlign: "center",
                                                 backgroundColor: "white",
-                                                borderRadius: 2,
                                             }}
                                         >
                                             <CardContent>
