@@ -154,7 +154,7 @@ const SegmentManager = () => {
 
     const handleEditSegment = (segment) => {
         setSegmentName(segment.name);
-        setGroups(segment.groups || []);
+        setGroups(segment.conditions);
         setEditingSegment(segment);
         setOpenForm(true);
     };
