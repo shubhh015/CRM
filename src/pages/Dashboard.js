@@ -1,5 +1,13 @@
-import { Card, CardContent, Container, Grid, Typography } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    CircularProgress,
+    Container,
+    Grid,
+    Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
 import { api, getDashboardStats } from "../services/api";
@@ -15,14 +23,15 @@ const Dashboard = () => {
         pendingCount: 0,
     });
     const [activeCampaigns, setActiveCampaigns] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
+            setLoading(true);
             try {
                 const statsResponse = await getDashboardStats();
                 const campaignsResponse = await api.get("/campaigns/count");
 
-                // Handle the stats and campaign counts
                 const campaignsWithCounts =
                     campaignsResponse.data.campaignStats || [];
                 let openCount = 0;
@@ -59,11 +68,22 @@ const Dashboard = () => {
                 setActiveCampaigns(campaigns);
             } catch (error) {
                 console.error("Error fetching dashboard data", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchDashboardData();
     }, []);
+
+    // Carousel settings
+    const carouselSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+    };
 
     return (
         <Container sx={{ maxWidth: "3xl" }}>
@@ -71,82 +91,93 @@ const Dashboard = () => {
                 Dashboard
             </Typography>
 
-            <Grid container spacing={3}>
-                {activeCampaigns.length > 0 ? (
-                    activeCampaigns.map((campaign, index) => (
-                        <Grid item xs={12} sm={4} key={index}>
+            {loading ? (
+                <Grid container justifyContent="center">
+                    <CircularProgress />
+                </Grid>
+            ) : (
+                <>
+                    {activeCampaigns.length > 0 ? (
+                        <Slider {...carouselSettings}>
+                            {activeCampaigns.map((campaign, index) => (
+                                <div key={index}>
+                                    <Card>
+                                        <CardContent>
+                                            <Typography variant="h6">
+                                                {campaign.title}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                State: {campaign.state}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            ))}
+                        </Slider>
+                    ) : (
+                        <Grid item xs={12}>
+                            <Typography variant="body1">
+                                No active campaigns.
+                            </Typography>
+                        </Grid>
+                    )}
+
+                    {/* Statistics Cards */}
+                    <Grid container spacing={3} style={{ marginTop: 20 }}>
+                        <Grid item xs={12} sm={4}>
                             <Card>
                                 <CardContent>
                                     <Typography variant="h6">
-                                        {campaign.title}
+                                        Total Customers
                                     </Typography>
-                                    <Typography variant="body2">
-                                        State: {campaign.state}
+                                    <Typography variant="h4">
+                                        {statistics.totalCustomers}
                                     </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
-                    ))
-                ) : (
-                    <Grid item xs={12}>
-                        <Typography variant="body1">
-                            No active campaigns.
-                        </Typography>
+                        <Grid item xs={12} sm={4}>
+                            <Card>
+                                <CardContent>
+                                    <Typography variant="h6">
+                                        Total Segments
+                                    </Typography>
+                                    <Typography variant="h4">
+                                        {statistics.totalSegments}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Card>
+                                <CardContent>
+                                    <Typography variant="h6">
+                                        Total Campaigns
+                                    </Typography>
+                                    <Typography variant="h4">
+                                        {statistics.totalCampaigns}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </Grid>
-                )}
-            </Grid>
 
-            <Grid container spacing={3} style={{ marginTop: 20 }}>
-                <Grid item xs={12} sm={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">
-                                Total Customers
-                            </Typography>
-                            <Typography variant="h4">
-                                {statistics.totalCustomers}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Total Segments</Typography>
-                            <Typography variant="h4">
-                                {statistics.totalSegments}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">
-                                Total Campaigns
-                            </Typography>
-                            <Typography variant="h4">
-                                {statistics.totalCampaigns}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={3} style={{ marginTop: 20 }}>
-                <Grid item xs={12} sm={6}>
-                    <OpenClosedGraph
-                        openCount={statistics.openCount}
-                        closedCount={statistics.closedCount}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <SentPendingGraph
-                        sentCount={statistics.sentCount}
-                        pendingCount={statistics.pendingCount}
-                    />
-                </Grid>
-            </Grid>
+                    <Grid container spacing={3} style={{ marginTop: 20 }}>
+                        <Grid item xs={12} sm={6}>
+                            <OpenClosedGraph
+                                openCount={statistics.openCount}
+                                closedCount={statistics.closedCount}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <SentPendingGraph
+                                sentCount={statistics.sentCount}
+                                pendingCount={statistics.pendingCount}
+                            />
+                        </Grid>
+                    </Grid>
+                </>
+            )}
         </Container>
     );
 };
