@@ -37,7 +37,7 @@ const Navbar = () => {
                         component="div"
                         sx={{ flexGrow: 1 }}
                     >
-                        MyLogo
+                        CRM
                     </Typography>
 
                     <Box sx={{ display: "flex", gap: 2 }}>

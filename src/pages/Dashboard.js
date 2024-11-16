@@ -1,4 +1,5 @@
 import {
+    Box,
     Card,
     CardContent,
     CircularProgress,
@@ -82,6 +83,7 @@ const Dashboard = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        arrows: true,
         responsive: [
             {
                 breakpoint: 600,
@@ -93,100 +95,193 @@ const Dashboard = () => {
     };
 
     return (
-        <Container sx={{ maxWidth: "3xl" }}>
-            <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
-                Dashboard
-            </Typography>
+        <Box
+            sx={{
+                backgroundColor: "#f4f6f8",
+                minHeight: "100vh",
+                py: 4,
+            }}
+        >
+            <Container sx={{ maxWidth: "lg" }}>
+                <Typography
+                    variant="h3"
+                    gutterBottom
+                    sx={{
+                        textAlign: "center",
+                        color: "primary.main",
+                        fontWeight: "bold",
+                        mb: 4,
+                    }}
+                >
+                    Dashboard
+                </Typography>
 
-            {loading ? (
-                <Grid container justifyContent="center">
-                    <CircularProgress />
-                </Grid>
-            ) : (
-                <>
-                    {/* Active Campaigns Carousel */}
-                    {activeCampaigns.length > 0 ? (
-                        <Slider {...carouselSettings}>
-                            {activeCampaigns.map((campaign, index) => (
-                                <div key={index}>
-                                    <Card sx={{ margin: 2 }}>
-                                        <CardContent>
-                                            <Typography variant="h6">
-                                                {campaign.title}
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                State: {campaign.state}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            ))}
-                        </Slider>
-                    ) : (
-                        <Grid item xs={12}>
-                            <Typography variant="body1">
+                {loading ? (
+                    <Grid container justifyContent="center">
+                        <CircularProgress />
+                    </Grid>
+                ) : (
+                    <>
+                        {/* Active Campaigns Carousel */}
+                        {activeCampaigns.length > 0 ? (
+                            <Box sx={{ mb: 4 }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        mb: 2,
+                                        textAlign: "center",
+                                        color: "secondary.main",
+                                    }}
+                                >
+                                    Active Campaigns
+                                </Typography>
+                                <Slider {...carouselSettings}>
+                                    {activeCampaigns.map((campaign, index) => (
+                                        <Card
+                                            key={index}
+                                            elevation={3}
+                                            sx={{
+                                                mx: 2,
+                                                p: 3,
+                                                textAlign: "center",
+                                                backgroundColor: "white",
+                                                borderRadius: 2,
+                                            }}
+                                        >
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h6"
+                                                    color="primary"
+                                                    sx={{ mb: 1 }}
+                                                >
+                                                    {campaign.title}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body1"
+                                                    color="textSecondary"
+                                                >
+                                                    State: {campaign.state}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </Slider>
+                            </Box>
+                        ) : (
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    textAlign: "center",
+                                    mb: 4,
+                                    color: "text.secondary",
+                                }}
+                            >
                                 No active campaigns.
                             </Typography>
-                        </Grid>
-                    )}
+                        )}
 
-                    {/* Statistics Cards */}
-                    <Grid container spacing={3} style={{ marginTop: 20 }}>
-                        <Grid item xs={12} sm={4}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6">
-                                        Total Customers
-                                    </Typography>
-                                    <Typography variant="h4">
-                                        {statistics.totalCustomers}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+                        {/* Statistics Cards */}
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                mb: 3,
+                                textAlign: "center",
+                                color: "secondary.main",
+                            }}
+                        >
+                            Key Statistics
+                        </Typography>
+                        <Grid container spacing={4}>
+                            {[
+                                {
+                                    label: "Total Customers",
+                                    value: statistics.totalCustomers,
+                                },
+                                {
+                                    label: "Total Segments",
+                                    value: statistics.totalSegments,
+                                },
+                                {
+                                    label: "Total Campaigns",
+                                    value: statistics.totalCampaigns,
+                                },
+                            ].map((stat, index) => (
+                                <Grid item xs={12} sm={4} key={index}>
+                                    <Card
+                                        elevation={2}
+                                        sx={{
+                                            p: 3,
+                                            textAlign: "center",
+                                            backgroundColor: "white",
+                                            borderRadius: 2,
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="subtitle1"
+                                            color="text.secondary"
+                                            sx={{ mb: 1 }}
+                                        >
+                                            {stat.label}
+                                        </Typography>
+                                        <Typography
+                                            variant="h4"
+                                            color="primary"
+                                        >
+                                            {stat.value}
+                                        </Typography>
+                                    </Card>
+                                </Grid>
+                            ))}
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6">
-                                        Total Segments
-                                    </Typography>
-                                    <Typography variant="h4">
-                                        {statistics.totalSegments}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6">
-                                        Total Campaigns
-                                    </Typography>
-                                    <Typography variant="h4">
-                                        {statistics.totalCampaigns}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
 
-                    <Grid container spacing={3} style={{ marginTop: 20 }}>
-                        <Grid item xs={12} sm={6}>
-                            <OpenClosedGraph
-                                openCount={statistics.openCount}
-                                closedCount={statistics.closedCount}
-                            />
+                        {/* Graphs Section */}
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                mt: 5,
+                                mb: 2,
+                                textAlign: "center",
+                                color: "secondary.main",
+                            }}
+                        >
+                            Campaign Performance
+                        </Typography>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} sm={6}>
+                                <Card
+                                    elevation={2}
+                                    sx={{
+                                        p: 2,
+                                        backgroundColor: "white",
+                                        borderRadius: 2,
+                                    }}
+                                >
+                                    <OpenClosedGraph
+                                        openCount={statistics.openCount}
+                                        closedCount={statistics.closedCount}
+                                    />
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Card
+                                    elevation={2}
+                                    sx={{
+                                        p: 2,
+                                        backgroundColor: "white",
+                                        borderRadius: 2,
+                                    }}
+                                >
+                                    <SentPendingGraph
+                                        sentCount={statistics.sentCount}
+                                        pendingCount={statistics.pendingCount}
+                                    />
+                                </Card>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <SentPendingGraph
-                                sentCount={statistics.sentCount}
-                                pendingCount={statistics.pendingCount}
-                            />
-                        </Grid>
-                    </Grid>
-                </>
-            )}
-        </Container>
+                    </>
+                )}
+            </Container>
+        </Box>
     );
 };
 

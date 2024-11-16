@@ -165,7 +165,7 @@ const Campaigns = () => {
     };
 
     return (
-        <Container>
+        <Container sx={{ paddingBottom: 3 }}>
             <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
                 My Campaigns
             </Typography>
