@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
-import { api, getDashboardStats } from "../services/api";
+import { api } from "../services/api";
 
 const Dashboard = () => {
     const [statistics, setStatistics] = useState({
@@ -30,7 +30,7 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             setLoading(true);
             try {
-                const statsResponse = await getDashboardStats();
+                const statsResponse = await api.get("/statistics/stats");
                 const campaignsResponse = await api.get("/campaigns/count");
 
                 const campaignsWithCounts =
