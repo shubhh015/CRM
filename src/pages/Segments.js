@@ -11,7 +11,6 @@ import {
     FormControl,
     Grid,
     IconButton,
-    InputLabel,
     Menu,
     MenuItem,
     Modal,
@@ -384,7 +383,9 @@ const SegmentManager = () => {
                         {groups.map((group, groupIndex) => (
                             <Box key={groupIndex} sx={{ marginBottom: 2 }}>
                                 <FormControl fullWidth>
-                                    <InputLabel>Group Logic</InputLabel>
+                                    <Typography variant="h6">
+                                        Group Logic
+                                    </Typography>
                                     <Select
                                         value={group.logic}
                                         onChange={(e) =>
@@ -403,7 +404,11 @@ const SegmentManager = () => {
                                     (condition, conditionIndex) => (
                                         <Box
                                             key={conditionIndex}
-                                            sx={{ display: "flex", gap: 2 }}
+                                            sx={{
+                                                display: "flex",
+                                                gap: 2,
+                                                marginY: 2,
+                                            }}
                                         >
                                             <TextField
                                                 label="Field"
@@ -442,6 +447,7 @@ const SegmentManager = () => {
                                                 }
                                             />
                                             <IconButton
+                                                color="red"
                                                 onClick={() =>
                                                     handleRemoveCondition(
                                                         groupIndex,
@@ -467,6 +473,7 @@ const SegmentManager = () => {
                                         Add Condition
                                     </Button>
                                     <IconButton
+                                        color="red"
                                         onClick={() =>
                                             handleRemoveGroup(groupIndex)
                                         }
