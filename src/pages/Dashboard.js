@@ -8,7 +8,6 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
@@ -144,7 +143,6 @@ const Dashboard = () => {
                                     >
                                         Active Campaigns
                                     </Typography>
-                                    <Link>View All</Link>
                                 </Box>
                                 <Slider {...carouselSettings}>
                                     {activeCampaigns.map((campaign, index) => (
