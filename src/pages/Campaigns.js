@@ -238,7 +238,7 @@ const Campaigns = () => {
                                         <TableCell>{campaign.status}</TableCell>
                                         <TableCell>{campaign.state}</TableCell>
                                         <TableCell>
-                                            {campaign.audienceSize || "N/A"}
+                                            {campaign.audienceSize}
                                         </TableCell>
                                         <TableCell>
                                             {formatDate(campaign.createdAt)}
