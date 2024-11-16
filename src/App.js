@@ -18,8 +18,9 @@ const App = () => {
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         setAuth(!!token);
-    }, [auth]);
-    console.log("log", !!localStorage.getItem("authToken"));
+        console.log("change happen");
+    }, [localStorage.getItem("authToken")]);
+
     return (
         <Router>
             {!!localStorage.getItem("authToken") && <Navbar />}
