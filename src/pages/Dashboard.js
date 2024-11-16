@@ -156,6 +156,7 @@ const Dashboard = () => {
                                                 </Typography>
                                                 <Box
                                                     sx={{
+                                                        display: "flex",
                                                         flexDirection: "row",
                                                         justifyContent:
                                                             "center",
