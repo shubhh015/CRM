@@ -447,7 +447,7 @@ const SegmentManager = () => {
                                                 }
                                             />
                                             <IconButton
-                                                color="red"
+                                                sx={{ color: "red" }}
                                                 onClick={() =>
                                                     handleRemoveCondition(
                                                         groupIndex,
@@ -473,7 +473,7 @@ const SegmentManager = () => {
                                         Add Condition
                                     </Button>
                                     <IconButton
-                                        color="red"
+                                        sx={{ color: "red" }}
                                         onClick={() =>
                                             handleRemoveGroup(groupIndex)
                                         }
