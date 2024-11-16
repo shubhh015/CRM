@@ -5,6 +5,7 @@ import {
     Autocomplete,
     Box,
     Button,
+    CircularProgress,
     Container,
     Divider,
     Fab,
@@ -37,6 +38,8 @@ const Campaigns = () => {
     const [openModal, setOpenModal] = useState(false);
     const [newCampaignTitle, setNewCampaignTitle] = useState("");
     const [selectedSegment, setSelectedSegment] = useState(null);
+    const [loading, setLoading] = useState(true); // Loader state for campaigns
+    const [loadingSegments, setLoadingSegments] = useState(false); // Loader state for segments
     const navigate = useNavigate();
     const [openAlert, setOpenAlert] = useState(false);
 
@@ -52,7 +55,6 @@ const Campaigns = () => {
         if (error.response && error.response.status === 403) {
             localStorage.removeItem("authToken");
             localStorage.removeItem("user");
-
             navigate("/login");
         } else {
             console.error("Error fetching data:", error);
@@ -60,17 +62,28 @@ const Campaigns = () => {
     };
 
     useEffect(() => {
-        if (userId) {
-            api.get(`/campaigns/past`, { params: { userId } })
-                .then((response) => {
+        const fetchCampaigns = async () => {
+            if (userId) {
+                try {
+                    setLoading(true); // Start loading
+                    const response = await api.get(`/campaigns/past`, {
+                        params: { userId },
+                    });
                     setCampaigns(response.data.campaigns);
-                })
-                .catch(handleError);
-        }
+                } catch (error) {
+                    handleError(error);
+                } finally {
+                    setLoading(false); // Stop loading
+                }
+            }
+        };
+
+        fetchCampaigns();
     }, [userId]);
 
     const fetchSegments = async () => {
         try {
+            setLoadingSegments(true); // Start loading segments
             const response = await api.get("/segments");
 
             if (!response.data || response.data.length === 0) {
@@ -83,6 +96,8 @@ const Campaigns = () => {
             }
         } catch (error) {
             handleError(error);
+        } finally {
+            setLoadingSegments(false); // Stop loading segments
         }
     };
 
@@ -152,7 +167,11 @@ const Campaigns = () => {
                 My Campaigns
             </Typography>
 
-            {campaigns.length === 0 ? (
+            {loading ? ( // Show loader while fetching campaigns
+                <Grid container justifyContent="center">
+                    <CircularProgress />
+                </Grid>
+            ) : campaigns.length === 0 ? (
                 <Typography variant="body1" sx={{ marginY: 2 }}>
                     No past campaigns found.{" "}
                     <Button onClick={handleOpenModal} color="primary">

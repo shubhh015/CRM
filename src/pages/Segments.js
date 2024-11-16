@@ -1,17 +1,15 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
     Alert,
     Box,
     Button,
+    CircularProgress,
     Container,
     FormControl,
     IconButton,
     InputLabel,
-    Menu,
     MenuItem,
     Modal,
-    Paper,
     Select,
     Snackbar,
     Table,
@@ -38,15 +36,19 @@ const SegmentManager = () => {
     const [noSegments, setNoSegments] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedSegment, setSelectedSegment] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [loadingSegmentAction, setLoadingSegmentAction] = useState(false);
 
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user ? user.id : null;
 
+    // Fetch segments on component mount
     useEffect(() => {
         fetchSegments();
     }, []);
 
     const fetchSegments = async () => {
+        setLoading(true);
         try {
             const response = await api.get("/segments", {
                 params: { userId: userId },
@@ -59,6 +61,8 @@ const SegmentManager = () => {
             }
         } catch (error) {
             console.error("Error fetching segments:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -72,7 +76,6 @@ const SegmentManager = () => {
         setGroups(newGroups);
     };
 
-    // Add a new condition group
     const handleAddGroup = () => {
         setGroups([
             ...groups,
@@ -83,120 +86,117 @@ const SegmentManager = () => {
         ]);
     };
 
-    // Remove a specific condition from a group
     const handleRemoveCondition = (groupIndex, conditionIndex) => {
         const newGroups = [...groups];
         newGroups[groupIndex].conditions.splice(conditionIndex, 1);
         setGroups(newGroups);
     };
 
-    // Remove a specific group
     const handleRemoveGroup = (groupIndex) => {
         const newGroups = [...groups];
         newGroups.splice(groupIndex, 1);
         setGroups(newGroups);
     };
 
-    // Update a condition's field, operator, or value
     const handleConditionChange = (groupIndex, conditionIndex, key, value) => {
         const newGroups = [...groups];
         newGroups[groupIndex].conditions[conditionIndex][key] = value;
         setGroups(newGroups);
     };
 
-    // Change the logical operator (AND/OR) for a group
     const handleGroupLogicChange = (groupIndex, value) => {
         const newGroups = [...groups];
         newGroups[groupIndex].logic = value;
         setGroups(newGroups);
     };
 
-    // Create or update a segment
     const createOrUpdateSegment = async () => {
         if (!segmentName) {
             setOpenAlert(true);
             return;
         }
 
+        setLoadingSegmentAction(true);
         try {
             const endpoint = editingSegment
                 ? `/segments/${editingSegment._id}`
                 : "/segments";
-
             const method = editingSegment ? "put" : "post";
 
-            const response = await api[method](endpoint, {
+            await api[method](endpoint, {
                 name: segmentName,
-                conditions: groups,
-                userId,
+                groups: groups,
+                userId: userId,
             });
 
-            console.log("Segment created/updated:", response.data);
             fetchSegments();
-            setOpenForm(false);
+
+            setSegmentName("");
+            setGroups([
+                {
+                    logic: "AND",
+                    conditions: [{ field: "", operator: "", value: "" }],
+                },
+            ]);
             setEditingSegment(null);
+            setOpenForm(false);
         } catch (error) {
-            console.error("Error creating/updating segment:", error);
+            console.error("Error saving segment:", error);
+        } finally {
+            setLoadingSegmentAction(false);
         }
     };
 
-    // Open the form for editing a segment
     const handleEditSegment = (segment) => {
-        setEditingSegment(segment);
         setSegmentName(segment.name);
-        setGroups(segment.conditions);
+        setGroups(segment.groups || []);
+        setEditingSegment(segment);
         setOpenForm(true);
-        setAnchorEl(null);
     };
 
-    // Delete a segment
-    const handleDeleteSegment = async (segmentId) => {
-        try {
-            const response = await api.delete(`/segments/${segmentId}`);
-            fetchSegments();
-            setAnchorEl(null);
-        } catch (error) {
-            console.error("Error deleting segment:", error);
+    const handleDeleteSegment = async (id) => {
+        if (confirm("Are you sure you want to delete this segment?")) {
+            try {
+                await api.delete(`/segments/${id}`);
+                fetchSegments();
+            } catch (error) {
+                console.error("Error deleting segment:", error);
+            }
         }
     };
 
-    // Open the menu for editing or deleting a segment
-    const handleOpenMenu = (event, segment) => {
-        setAnchorEl(event.currentTarget);
-        setSelectedSegment(segment);
-    };
-
-    // Close the menu
-    const handleCloseMenu = () => {
-        setSelectedSegment(null);
-        setEditingSegment(null);
-        setAnchorEl(null);
-    };
+    if (loading) {
+        return (
+            <Container>
+                <CircularProgress />
+            </Container>
+        );
+    }
 
     return (
         <Container>
-            <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
-                Manage Segments
+            <Typography variant="h4" gutterBottom>
+                Segment Manager
             </Typography>
 
-            {noSegments && (
-                <Typography color="error">
-                    No segments found.{" "}
-                    <Button onClick={() => setOpenForm(true)} color="primary">
-                        Create a new segment
-                    </Button>
-                </Typography>
-            )}
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenForm(true)}
+            >
+                Create New Segment
+            </Button>
 
-            {segments.length > 0 && (
+            {noSegments ? (
+                <Typography variant="body1" color="textSecondary">
+                    No segments found.
+                </Typography>
+            ) : (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Segment Name</TableCell>
-                                <TableCell>Conditions</TableCell>
-                                <TableCell>Audience Size</TableCell>
-                                <TableCell>Created At</TableCell>
+                                <TableCell>Name</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -205,78 +205,23 @@ const SegmentManager = () => {
                                 <TableRow key={segment._id}>
                                     <TableCell>{segment.name}</TableCell>
                                     <TableCell>
-                                        {segment.conditions.map(
-                                            (group, groupIndex) => (
-                                                <div key={groupIndex}>
-                                                    {group.conditions.map(
-                                                        (
-                                                            condition,
-                                                            conditionIndex
-                                                        ) => (
-                                                            <Typography
-                                                                key={
-                                                                    conditionIndex
-                                                                }
-                                                            >
-                                                                {condition.field
-                                                                    .charAt(0)
-                                                                    .toUpperCase() +
-                                                                    condition.field.slice(
-                                                                        1
-                                                                    )}{" "}
-                                                                {
-                                                                    condition.operator
-                                                                }{" "}
-                                                                {
-                                                                    condition.value
-                                                                }
-                                                            </Typography>
-                                                        )
-                                                    )}
-                                                </div>
-                                            )
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {segment.audienceSize}
-                                    </TableCell>
-                                    <TableCell>
-                                        {new Date(
-                                            segment.createdAt
-                                        ).toLocaleDateString("en-GB")}
-                                    </TableCell>
-                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={() =>
+                                                handleEditSegment(segment)
+                                            }
+                                            startIcon={<EditIcon />}
+                                        >
+                                            Edit
+                                        </Button>
                                         <IconButton
-                                            onClick={(e) =>
-                                                handleOpenMenu(e, segment)
+                                            onClick={() =>
+                                                handleDeleteSegment(segment._id)
                                             }
                                         >
-                                            <EditIcon />
+                                            <DeleteIcon />
                                         </IconButton>
-                                        <Menu
-                                            anchorEl={anchorEl}
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleCloseMenu}
-                                        >
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleEditSegment(
-                                                        selectedSegment
-                                                    )
-                                                }
-                                            >
-                                                Edit
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleDeleteSegment(
-                                                        selectedSegment._id
-                                                    )
-                                                }
-                                            >
-                                                Delete
-                                            </MenuItem>
-                                        </Menu>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -420,8 +365,13 @@ const SegmentManager = () => {
                         <Button
                             variant="contained"
                             onClick={createOrUpdateSegment}
+                            disabled={loadingSegmentAction}
                         >
-                            Save
+                            {loadingSegmentAction ? (
+                                <CircularProgress size={24} />
+                            ) : (
+                                "Save"
+                            )}
                         </Button>
                     </Box>
                 </Box>
