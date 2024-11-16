@@ -1,18 +1,22 @@
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
+    Alert,
     Box,
     Button,
     CircularProgress,
     Container,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
+    Fab,
+    FormControl,
     Grid,
     IconButton,
     Menu,
     MenuItem,
+    Modal,
     Paper,
+    Select,
+    Snackbar,
     Table,
     TableBody,
     TableCell,
@@ -132,8 +136,15 @@ const SegmentManager = () => {
 
             fetchSegments();
 
-            // Reset the form after saving
-            resetForm();
+            setSegmentName("");
+            setGroups([
+                {
+                    logic: "AND",
+                    conditions: [{ field: "", operator: "", value: "" }],
+                },
+            ]);
+            setEditingSegment(null);
+            setOpenForm(false);
         } catch (error) {
             console.error("Error saving segment:", error);
         } finally {
@@ -143,7 +154,7 @@ const SegmentManager = () => {
 
     const handleEditSegment = (segment) => {
         setSegmentName(segment.name);
-        setGroups(segment.conditions || []); // Autofill conditions
+        setGroups(segment.groups || []);
         setEditingSegment(segment);
         setOpenForm(true);
     };
@@ -173,18 +184,6 @@ const SegmentManager = () => {
         setSelectedSegment(null);
         setEditingSegment(null);
         setAnchorEl(null);
-    };
-
-    const resetForm = () => {
-        setSegmentName("");
-        setGroups([
-            {
-                logic: "AND",
-                conditions: [{ field: "", operator: "", value: "" }],
-            },
-        ]);
-        setEditingSegment(null);
-        setOpenForm(false);
     };
 
     return (
@@ -344,32 +343,73 @@ const SegmentManager = () => {
                         </Table>
                     </TableContainer>
                 )}
-            </Container>
 
-            <Dialog open={openForm} onClose={resetForm}>
-                <DialogTitle>
-                    {editingSegment ? "Edit Segment" : "Create New Segment"}
-                </DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Segment Name"
-                        fullWidth
-                        value={segmentName}
-                        onChange={(e) => setSegmentName(e.target.value)}
-                    />
-                    <div>
+                <Fab
+                    color="primary"
+                    aria-label="add"
+                    sx={{
+                        position: "fixed",
+                        bottom: 56,
+                        right: 56,
+                    }}
+                    onClick={() => setOpenForm(true)}
+                >
+                    <AddIcon />
+                </Fab>
+
+                <Modal open={openForm} onClose={() => setOpenForm(false)}>
+                    <Box
+                        sx={{
+                            padding: 4,
+                            margin: "auto",
+                            maxWidth: 600,
+                            backgroundColor: "white",
+                            marginTop: "5%",
+                        }}
+                    >
+                        <Typography variant="h6">
+                            {editingSegment
+                                ? "Edit Segment"
+                                : "Create New Segment"}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            label="Segment Name"
+                            value={segmentName}
+                            onChange={(e) => setSegmentName(e.target.value)}
+                            sx={{ marginY: 2 }}
+                        />
+
                         {groups.map((group, groupIndex) => (
-                            <div key={groupIndex}>
-                                <Button
-                                    onClick={() =>
-                                        handleAddCondition(groupIndex)
-                                    }
-                                >
-                                    Add Condition
-                                </Button>
+                            <Box key={groupIndex} sx={{ marginBottom: 2 }}>
+                                <FormControl fullWidth>
+                                    <Typography variant="body2">
+                                        Group Logic
+                                    </Typography>
+                                    <Select
+                                        value={group.logic}
+                                        onChange={(e) =>
+                                            handleGroupLogicChange(
+                                                groupIndex,
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <MenuItem value="AND">AND</MenuItem>
+                                        <MenuItem value="OR">OR</MenuItem>
+                                    </Select>
+                                </FormControl>
+
                                 {group.conditions.map(
                                     (condition, conditionIndex) => (
-                                        <div key={conditionIndex}>
+                                        <Box
+                                            key={conditionIndex}
+                                            sx={{
+                                                display: "flex",
+                                                gap: 2,
+                                                marginY: 2,
+                                            }}
+                                        >
                                             <TextField
                                                 label="Field"
                                                 value={condition.field}
@@ -406,7 +446,8 @@ const SegmentManager = () => {
                                                     )
                                                 }
                                             />
-                                            <Button
+                                            <IconButton
+                                                sx={{ color: "red" }}
                                                 onClick={() =>
                                                     handleRemoveCondition(
                                                         groupIndex,
@@ -414,43 +455,115 @@ const SegmentManager = () => {
                                                     )
                                                 }
                                             >
-                                                Remove Condition
-                                            </Button>
-                                        </div>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
                                     )
                                 )}
-                            </div>
-                        ))}
-                        <Button onClick={handleAddGroup}>Add Group</Button>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={resetForm}>Cancel</Button>
-                    <Button onClick={createOrUpdateSegment}>
-                        {loadingSegmentAction
-                            ? "Saving..."
-                            : editingSegment
-                            ? "Save Changes"
-                            : "Create Segment"}
-                    </Button>
-                </DialogActions>
-            </Dialog>
 
-            {/* Delete Confirmation Modal */}
-            <Dialog
-                open={openDeleteModal}
-                onClose={() => setOpenDeleteModal(false)}
-            >
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <DialogActions>
-                    <Button onClick={() => setOpenDeleteModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={confirmDeleteSegment} color="error">
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                                <Box sx={{ display: "flex", gap: 2 }}>
+                                    <Button
+                                        variant="text"
+                                        color="secondary"
+                                        onClick={() =>
+                                            handleAddCondition(groupIndex)
+                                        }
+                                        sx={{ marginY: 2 }}
+                                    >
+                                        Add Condition
+                                    </Button>
+                                    <IconButton
+                                        sx={{ color: "red" }}
+                                        onClick={() =>
+                                            handleRemoveGroup(groupIndex)
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        ))}
+
+                        <Button
+                            variant="text"
+                            color="primary"
+                            onClick={handleAddGroup}
+                        >
+                            Add Group
+                        </Button>
+
+                        <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => setOpenForm(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={createOrUpdateSegment}
+                                disabled={loadingSegmentAction}
+                            >
+                                {loadingSegmentAction ? (
+                                    <CircularProgress size={24} />
+                                ) : (
+                                    "Save"
+                                )}
+                            </Button>
+                        </Box>
+                    </Box>
+                </Modal>
+
+                {/* Delete Confirmation Modal */}
+                <Modal
+                    open={openDeleteModal}
+                    onClose={() => setOpenDeleteModal(false)}
+                >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            backgroundColor: "#fff",
+                            padding: 3,
+                            borderRadius: 2,
+                            boxShadow: 24,
+                            width: 400,
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            Are you sure you want to delete this segment?
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={confirmDeleteSegment}
+                            fullWidth
+                            sx={{ marginBottom: 2 }}
+                        >
+                            Delete
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={() => setOpenDeleteModal(false)}
+                            fullWidth
+                        >
+                            Cancel
+                        </Button>
+                    </Box>
+                </Modal>
+
+                <Snackbar
+                    open={openAlert}
+                    autoHideDuration={6000}
+                    onClose={() => setOpenAlert(false)}
+                >
+                    <Alert severity="warning" sx={{ width: "100%" }}>
+                        Please enter a segment name.
+                    </Alert>
+                </Snackbar>
+            </Container>
         </Box>
     );
 };
