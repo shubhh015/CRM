@@ -84,8 +84,10 @@ const Campaigns = () => {
 
     const fetchSegments = async () => {
         try {
-            setLoadingSegments(true); // Start loading segments
-            const response = await api.get("/segments");
+            setLoadingSegments(true);
+            const response = await api.get("/segments", {
+                params: { userId: userId },
+            });
 
             if (!response.data || response.data.length === 0) {
                 setOpenAlert(true);
@@ -98,7 +100,7 @@ const Campaigns = () => {
         } catch (error) {
             handleError(error);
         } finally {
-            setLoadingSegments(false); // Stop loading segments
+            setLoadingSegments(false);
         }
     };
 

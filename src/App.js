@@ -22,7 +22,7 @@ const App = () => {
     console.log("log", !!localStorage.getItem("authToken"));
     return (
         <Router>
-            {auth && <Navbar />}
+            {!!localStorage.getItem("authToken") && <Navbar />}
             <Routes>
                 <Route
                     path="/"

@@ -199,7 +199,7 @@ const SegmentManager = () => {
     return (
         <Container>
             <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
-                Segment Manager
+                My Segments
             </Typography>
 
             {noSegments ? (
