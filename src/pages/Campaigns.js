@@ -169,7 +169,7 @@ const Campaigns = () => {
             </Typography>
 
             {loading ? (
-                <Grid container justifyContent="center">
+                <Grid container justifyContent="center" sx={{ marginY: 5 }}>
                     <CircularProgress />
                 </Grid>
             ) : campaigns.length === 0 ? (

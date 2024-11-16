@@ -7,7 +7,6 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
 import { api, getDashboardStats } from "../services/api";
@@ -76,15 +75,6 @@ const Dashboard = () => {
         fetchDashboardData();
     }, []);
 
-    // Carousel settings
-    const carouselSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-    };
-
     return (
         <Container sx={{ maxWidth: "3xl" }}>
             <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
@@ -98,22 +88,20 @@ const Dashboard = () => {
             ) : (
                 <>
                     {activeCampaigns.length > 0 ? (
-                        <Slider {...carouselSettings}>
-                            {activeCampaigns.map((campaign, index) => (
-                                <div key={index}>
-                                    <Card>
-                                        <CardContent>
-                                            <Typography variant="h6">
-                                                {campaign.title}
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                State: {campaign.state}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            ))}
-                        </Slider>
+                        activeCampaigns.map((campaign, index) => (
+                            <div key={index}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6">
+                                            {campaign.title}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            State: {campaign.state}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        ))
                     ) : (
                         <Grid item xs={12}>
                             <Typography variant="body1">

@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -6,7 +7,9 @@ import {
     Button,
     CircularProgress,
     Container,
+    Fab,
     FormControl,
+    Grid,
     IconButton,
     InputLabel,
     MenuItem,
@@ -44,7 +47,7 @@ const SegmentManager = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user ? user.id : null;
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
-    // Fetch segments on component mount
+
     useEffect(() => {
         fetchSegments();
     }, []);
@@ -127,7 +130,7 @@ const SegmentManager = () => {
 
             await api[method](endpoint, {
                 name: segmentName,
-                groups: groups,
+                conditions: groups,
                 userId: userId,
             });
 
@@ -168,42 +171,52 @@ const SegmentManager = () => {
         } catch (error) {
             console.error("Error deleting segment:", error);
         } finally {
-            setOpenDeleteModal(false); // Close modal after deletion
+            setOpenDeleteModal(false);
         }
     };
 
+    const handleOpenMenu = (event, segment) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedSegment(segment);
+    };
+
+    const handleCloseMenu = () => {
+        setSelectedSegment(null);
+        setEditingSegment(null);
+        setAnchorEl(null);
+    };
     if (loading) {
         return (
             <Container>
-                <CircularProgress />
+                <Grid container justifyContent="center">
+                    <CircularProgress />
+                </Grid>
             </Container>
         );
     }
 
     return (
         <Container>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
                 Segment Manager
             </Typography>
 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenForm(true)}
-            >
-                Create New Segment
-            </Button>
-
             {noSegments ? (
-                <Typography variant="body1" color="textSecondary">
-                    No segments found.
+                <Typography variant="body1" sx={{ marginY: 2 }}>
+                    No segment found.{" "}
+                    <Button onClick={() => setOpenForm(true)} color="primary">
+                        Create a New Segment
+                    </Button>
                 </Typography>
             ) : (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
+                                <TableCell>Segment Name</TableCell>
+                                <TableCell>Conditions</TableCell>
+                                <TableCell>Audience Size</TableCell>
+                                <TableCell>Created At</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -212,20 +225,78 @@ const SegmentManager = () => {
                                 <TableRow key={segment._id}>
                                     <TableCell>{segment.name}</TableCell>
                                     <TableCell>
+                                        {segment.conditions.map(
+                                            (group, groupIndex) => (
+                                                <div key={groupIndex}>
+                                                    {group.conditions.map(
+                                                        (
+                                                            condition,
+                                                            conditionIndex
+                                                        ) => (
+                                                            <Typography
+                                                                key={
+                                                                    conditionIndex
+                                                                }
+                                                            >
+                                                                {condition.field
+                                                                    .charAt(0)
+                                                                    .toUpperCase() +
+                                                                    condition.field.slice(
+                                                                        1
+                                                                    )}{" "}
+                                                                {
+                                                                    condition.operator
+                                                                }{" "}
+                                                                {
+                                                                    condition.value
+                                                                }
+                                                            </Typography>
+                                                        )
+                                                    )}
+                                                </div>
+                                            )
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {segment.audienceSize}
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            segment.createdAt
+                                        ).toLocaleDateString("en-GB")}
+                                    </TableCell>
+                                    <TableCell>
                                         <IconButton
-                                            onClick={() =>
-                                                handleEditSegment(segment)
+                                            onClick={(e) =>
+                                                handleOpenMenu(e, segment)
                                             }
                                         >
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton
-                                            onClick={() =>
-                                                handleDeleteSegment(segment._id)
-                                            }
+                                        <Menu
+                                            anchorEl={anchorEl}
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleCloseMenu}
                                         >
-                                            <DeleteIcon />
-                                        </IconButton>
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleEditSegment(
+                                                        selectedSegment
+                                                    )
+                                                }
+                                            >
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleDeleteSegment(
+                                                        selectedSegment._id
+                                                    )
+                                                }
+                                            >
+                                                Delete
+                                            </MenuItem>
+                                        </Menu>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -430,6 +501,17 @@ const SegmentManager = () => {
                     </div>
                 </Paper>
             </Modal>
+            <Fab
+                color="primary"
+                aria-label="add"
+                sx={{ position: "fixed", bottom: 56, right: 52 }}
+                onClick={() => {
+                    setEditingSegment(null);
+                    setOpenForm(true);
+                }}
+            >
+                <AddIcon />
+            </Fab>
         </Container>
     );
 };
