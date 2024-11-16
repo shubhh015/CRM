@@ -19,7 +19,7 @@ const App = () => {
         const token = localStorage.getItem("authToken");
         setAuth(!!token);
     }, [auth]);
-
+    console.log("log", !!localStorage.getItem("authToken"));
     return (
         <Router>
             {auth && <Navbar />}
@@ -27,7 +27,7 @@ const App = () => {
                 <Route
                     path="/"
                     element={
-                        localStorage.getItem("authToken") ? (
+                        !!localStorage.getItem("authToken") ? (
                             <Navigate to="/dashboard" />
                         ) : (
                             <Navigate to="/login" />
