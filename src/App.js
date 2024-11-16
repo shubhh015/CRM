@@ -13,13 +13,20 @@ import Dashboard from "./pages/Dashboard";
 import GoogleLoginPage from "./pages/GoogleLoginPage";
 import SegmentManager from "./pages/Segments";
 const App = () => {
-    const [auth, setAuth] = useState(false);
+    const [auth, setAuth] = useState(!!localStorage.getItem("authToken"));
 
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        setAuth(!!token);
-        console.log("change happen");
-    }, [localStorage.getItem("authToken")]);
+        const handleStorageChange = () => {
+            const token = localStorage.getItem("authToken");
+            setAuth(!!token);
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+        console.log("change in the local storage");
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
 
     return (
         <Router>
