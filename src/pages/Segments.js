@@ -383,7 +383,7 @@ const SegmentManager = () => {
                         {groups.map((group, groupIndex) => (
                             <Box key={groupIndex} sx={{ marginBottom: 2 }}>
                                 <FormControl fullWidth>
-                                    <Typography variant="h6">
+                                    <Typography variant="body2">
                                         Group Logic
                                     </Typography>
                                     <Select
@@ -463,7 +463,7 @@ const SegmentManager = () => {
 
                                 <Box sx={{ display: "flex", gap: 2 }}>
                                     <Button
-                                        variant="contained"
+                                        variant="text"
                                         color="secondary"
                                         onClick={() =>
                                             handleAddCondition(groupIndex)
@@ -485,7 +485,7 @@ const SegmentManager = () => {
                         ))}
 
                         <Button
-                            variant="contained"
+                            variant="text"
                             color="primary"
                             onClick={handleAddGroup}
                         >
@@ -504,7 +504,6 @@ const SegmentManager = () => {
                                 onClick={createOrUpdateSegment}
                                 disabled={loadingSegmentAction}
                             >
-                                Save
                                 {loadingSegmentAction ? (
                                     <CircularProgress size={24} />
                                 ) : (
