@@ -182,23 +182,6 @@ const SegmentManager = () => {
         setEditingSegment(null);
         setAnchorEl(null);
     };
-    if (loading) {
-        return (
-            <Box
-                sx={{
-                    backgroundColor: "#f4f6f8",
-                    minHeight: "100vh",
-                    py: 4,
-                }}
-            >
-                <Container>
-                    <Grid container justifyContent="center">
-                        <CircularProgress />
-                    </Grid>
-                </Container>
-            </Box>
-        );
-    }
 
     return (
         <Box
@@ -222,7 +205,11 @@ const SegmentManager = () => {
                     My Segments
                 </Typography>
 
-                {noSegments ? (
+                {loading ? (
+                    <Grid container justifyContent="center" sx={{ marginY: 5 }}>
+                        <CircularProgress />
+                    </Grid>
+                ) : noSegments ? (
                     <Typography
                         variant="body1"
                         sx={{
