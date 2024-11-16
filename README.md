@@ -1,70 +1,221 @@
-# Getting Started with Create React App
+# CRM Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a Customer Relationship Management (CRM) web application built with React and Material UI. It includes functionalities for managing segments, campaigns, and dashboard views. The app integrates with Google OAuth for authentication and displays key performance metrics through various visualizations like pie charts.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+-   **Authentication**: Google OAuth login and logout functionality.
+-   **Dashboard**: Overview of key metrics and data.
+-   **Segments**: Create, edit, and delete customer segments with complex conditions.
+-   **Campaigns**: Manage campaigns tied to customer segments.
+-   **Data Visualization**: Pie charts and other visualizations for data insights.
 
-### `npm start`
+## Pages
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Login Page
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The login page is the entry point to the application. Users authenticate using Google OAuth to gain access to the CRM dashboard and other features. Upon successful login, the app stores an authentication token in localStorage.
 
-### `npm test`
+### 2. Dashboard Page
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The dashboard provides a high-level overview of key metrics such as the number of open and closed campaigns. It includes visualizations like pie charts and tables to display data in an accessible format.
 
-### `npm run build`
+### 3. Segments Page
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+In this section, users can view and manage their customer segments. Users can create, edit, or delete segments, each defined by a set of conditions. Segments can be grouped with "AND"/"OR" logic to filter customers based on different criteria.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+-   **Create Segment**: Users can add a new segment by defining its name and conditions.
+-   **Edit Segment**: Existing segments can be updated with new names or conditions.
+-   **Delete Segment**: Segments can be deleted permanently after confirmation.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 4. Campaigns Page
 
-### `npm run eject`
+Users can manage their campaigns here. The campaigns are linked to segments, and this page provides functionalities to view, create, edit, or delete campaigns. Campaigns can be tracked based on various parameters.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Components
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Navbar
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The Navbar component serves as the top navigation bar for the application. It includes links to the dashboard, segments, and campaigns, along with a logout button. The navbar is conditionally displayed based on whether the user is authenticated.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 2. OpenClosedGraph
 
-## Learn More
+The OpenClosedGraph component renders a pie chart to visualize the open and closed statuses of various items, such as campaigns. It takes `openCount` and `closedCount` as props and displays them with customizable colors.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 3. SegmentManager
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The SegmentManager component handles the creation, editing, and deletion of segments. It allows users to define segments by specifying conditions and logic, and it manages the state for editing and deleting segments.
 
-### Code Splitting
+### 4. Modals and Alerts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The app uses modal dialogs for confirming actions like deleting a segment or saving a new segment. Alerts are displayed for invalid actions, such as missing a segment name.
 
-### Analyzing the Bundle Size
+## API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The app interacts with the backend through the following API endpoints. These endpoints handle the core functionalities like managing segments, campaigns, and user authentication.
 
-### Making a Progressive Web App
+### 1. Authentication API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+-   **POST `/auth/login`**:
 
-### Advanced Configuration
+    -   Functionality: Handles Google OAuth authentication.
+    -   Request Body: `idToken` (The token received after Google login)
+    -   Response: Auth token if authentication is successful.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+-   **POST `/auth/logout`**:
+    -   Functionality: Logs the user out and invalidates their session.
+    -   Request Body: None
+    -   Response: Success message or error.
 
-### Deployment
+### 2. Segments API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+-   **GET `/segments`**:
 
-### `npm run build` fails to minify
+    -   Functionality: Fetches all the segments available for the authenticated user.
+    -   Request Body: None
+    -   Response: List of segments with their details (name, conditions, audience size, created at, etc.).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+-   **POST `/segments`**:
+
+    -   Functionality: Creates a new segment.
+    -   Request Body:
+        ```json
+        {
+            "name": "Segment Name",
+            "conditions": [
+                {
+                    "logic": "AND",
+                    "conditions": [
+                        {
+                            "field": "totalSpending",
+                            "operator": ">",
+                            "value": "100"
+                        }
+                    ]
+                }
+            ]
+        }
+        ```
+    -   Response: Created segment details.
+
+-   **PUT `/segments/{id}`**:
+
+    -   Functionality: Updates an existing segment by its ID.
+    -   Request Body:
+        ```json
+        {
+            "name": "Updated Segment Name",
+            "conditions": [
+                {
+                    "logic": "OR",
+                    "conditions": [
+                        {
+                            "field": "visits",
+                            "operator": ">=",
+                            "value": "5"
+                        }
+                    ]
+                }
+            ]
+        }
+        ```
+    -   Response: Updated segment details.
+
+-   **DELETE `/segments/{id}`**:
+    -   Functionality: Deletes an existing segment by its ID.
+    -   Request Body: None
+    -   Response: Success message indicating the segment has been deleted.
+
+### 3. Campaigns API
+
+-   **GET `/campaigns`**:
+
+    -   Functionality: Fetches all campaigns linked to the authenticated user.
+    -   Request Body: None
+    -   Response: List of campaigns with their details (name, status, linked segments, etc.).
+
+-   **POST `/campaigns`**:
+
+    -   Functionality: Creates a new campaign linked to specific segments.
+    -   Request Body:
+        ```json
+        {
+            "name": "Campaign Name",
+            "segmentIds": ["segment1Id", "segment2Id"],
+            "status": "active"
+        }
+        ```
+    -   Response: Created campaign details.
+
+-   **PUT `/campaigns/{id}`**:
+
+    -   Functionality: Updates an existing campaign by its ID.
+    -   Request Body:
+        ```json
+        {
+            "name": "Updated Campaign Name",
+            "status": "closed"
+        }
+        ```
+    -   Response: Updated campaign details.
+
+-   **DELETE `/campaigns/{id}`**:
+    -   Functionality: Deletes a campaign by its ID.
+    -   Request Body: None
+    -   Response: Success message indicating the campaign has been deleted.
+
+### 4. Data and Visualization API
+
+-   **GET `/metrics/campaign-status`**:
+    -   Functionality: Retrieves the current open and closed campaign statistics for visualization.
+    -   Request Body: None
+    -   Response:
+        ```json
+        {
+            "openCount": 25,
+            "closedCount": 15
+        }
+        ```
+
+## Technologies Used
+
+-   **React**: JavaScript library for building user interfaces.
+-   **Material UI**: A popular React UI framework used for styling components.
+-   **Recharts**: A charting library for rendering data visualizations like pie charts.
+-   **React Router**: Used for routing and navigation between pages.
+-   **Google OAuth**: For handling user authentication.
+-   **Node.js/Express**: Backend server for handling API requests.
+-   **MongoDB**: Database for storing user and campaign/segment data.
+
+## Setup and Installation
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/yourusername/crm-app.git
+    ```
+
+2. **Install dependencies**:
+   Navigate to the project directory and install the required packages:
+
+    ```bash
+    cd crm-app
+    npm install
+    ```
+
+3. **Run the app locally**:
+   Start the development server to run the app on your local machine:
+
+    ```bash
+    npm start
+    ```
+
+4. **Build the app for production**:
+   To build the app for production, use:
+
+    ```bash
+    npm run build
+    ```
+
+5. **Backend Setup**:
+   Make sure to set up the backend (Node.js/Express server) separately, as it handles the API requests and authentication.
