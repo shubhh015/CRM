@@ -184,11 +184,19 @@ const SegmentManager = () => {
     };
     if (loading) {
         return (
-            <Container>
-                <Grid container justifyContent="center">
-                    <CircularProgress />
-                </Grid>
-            </Container>
+            <Box
+                sx={{
+                    backgroundColor: "#f4f6f8",
+                    minHeight: "100vh",
+                    py: 4,
+                }}
+            >
+                <Container>
+                    <Grid container justifyContent="center">
+                        <CircularProgress />
+                    </Grid>
+                </Container>
+            </Box>
         );
     }
 
