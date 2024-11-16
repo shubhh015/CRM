@@ -8,6 +8,7 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
@@ -125,17 +126,26 @@ const Dashboard = () => {
                     <>
                         {activeCampaigns.length > 0 ? (
                             <Box sx={{ mb: 4 }}>
-                                <Typography
-                                    variant="h5"
+                                <Box
                                     sx={{
-                                        mb: 2,
-
-                                        textAlign: "center",
-                                        color: "secondary.main",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
                                     }}
                                 >
-                                    Active Campaigns
-                                </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            mb: 2,
+
+                                            color: "secondary.main",
+                                        }}
+                                    >
+                                        Active Campaigns
+                                    </Typography>
+                                    <Link>View All</Link>
+                                </Box>
                                 <Slider {...carouselSettings}>
                                     {activeCampaigns.map((campaign, index) => (
                                         <Card
@@ -195,7 +205,7 @@ const Dashboard = () => {
                             variant="h5"
                             sx={{
                                 mb: 3,
-                                textAlign: "center",
+
                                 color: "secondary.main",
                             }}
                         >
@@ -250,7 +260,7 @@ const Dashboard = () => {
                             sx={{
                                 mt: 5,
                                 mb: 2,
-                                textAlign: "center",
+
                                 color: "secondary.main",
                             }}
                         >

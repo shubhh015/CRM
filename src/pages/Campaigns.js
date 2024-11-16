@@ -217,6 +217,7 @@ const Campaigns = () => {
                                     <TableCell>Failed Count</TableCell>
                                     <TableCell>Status</TableCell>
                                     <TableCell>State</TableCell>
+                                    <TableCell>Audience Size</TableCell>
                                     <TableCell>Created At</TableCell>
                                     <TableCell>Actions</TableCell>
                                 </TableRow>
@@ -236,6 +237,9 @@ const Campaigns = () => {
                                         </TableCell>
                                         <TableCell>{campaign.status}</TableCell>
                                         <TableCell>{campaign.state}</TableCell>
+                                        <TableCell>
+                                            {campaign.audienceSize || "N/A"}
+                                        </TableCell>
                                         <TableCell>
                                             {formatDate(campaign.createdAt)}
                                         </TableCell>
