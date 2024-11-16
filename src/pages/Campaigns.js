@@ -9,6 +9,7 @@ import {
     Container,
     Divider,
     Fab,
+    Grid,
     IconButton,
     ListItemText,
     Menu,
@@ -167,7 +168,7 @@ const Campaigns = () => {
                 My Campaigns
             </Typography>
 
-            {loading ? ( // Show loader while fetching campaigns
+            {loading ? (
                 <Grid container justifyContent="center">
                     <CircularProgress />
                 </Grid>

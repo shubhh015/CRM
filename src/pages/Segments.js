@@ -1,4 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
     Alert,
     Box,
@@ -10,6 +11,7 @@ import {
     InputLabel,
     MenuItem,
     Modal,
+    Paper,
     Select,
     Snackbar,
     Table,
@@ -38,10 +40,10 @@ const SegmentManager = () => {
     const [selectedSegment, setSelectedSegment] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingSegmentAction, setLoadingSegmentAction] = useState(false);
-
+    const [segmentToDelete, setSegmentToDelete] = useState(null);
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user ? user.id : null;
-
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     // Fetch segments on component mount
     useEffect(() => {
         fetchSegments();
@@ -154,14 +156,19 @@ const SegmentManager = () => {
         setOpenForm(true);
     };
 
-    const handleDeleteSegment = async (id) => {
-        if (confirm("Are you sure you want to delete this segment?")) {
-            try {
-                await api.delete(`/segments/${id}`);
-                fetchSegments();
-            } catch (error) {
-                console.error("Error deleting segment:", error);
-            }
+    const handleDeleteSegment = (id) => {
+        setSegmentToDelete(id);
+        setOpenDeleteModal(true);
+    };
+
+    const confirmDeleteSegment = async () => {
+        try {
+            await api.delete(`/segments/${segmentToDelete}`);
+            fetchSegments();
+        } catch (error) {
+            console.error("Error deleting segment:", error);
+        } finally {
+            setOpenDeleteModal(false); // Close modal after deletion
         }
     };
 
@@ -205,16 +212,13 @@ const SegmentManager = () => {
                                 <TableRow key={segment._id}>
                                     <TableCell>{segment.name}</TableCell>
                                     <TableCell>
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
+                                        <IconButton
                                             onClick={() =>
                                                 handleEditSegment(segment)
                                             }
-                                            startIcon={<EditIcon />}
                                         >
-                                            Edit
-                                        </Button>
+                                            <EditIcon />
+                                        </IconButton>
                                         <IconButton
                                             onClick={() =>
                                                 handleDeleteSegment(segment._id)
@@ -386,6 +390,46 @@ const SegmentManager = () => {
                     Segment name is required!
                 </Alert>
             </Snackbar>
+
+            <Modal
+                open={openDeleteModal}
+                onClose={() => setOpenDeleteModal(false)}
+            >
+                <Paper
+                    style={{
+                        padding: 20,
+                        margin: "auto",
+                        marginTop: "20%",
+                        maxWidth: 400,
+                    }}
+                >
+                    <Typography variant="h6">Confirm Deletion</Typography>
+                    <Typography variant="body1">
+                        Are you sure you want to delete this segment?
+                    </Typography>
+                    <div
+                        style={{
+                            marginTop: 20,
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={confirmDeleteSegment}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setOpenDeleteModal(false)}
+                        >
+                            No
+                        </Button>
+                    </div>
+                </Paper>
+            </Modal>
         </Container>
     );
 };
