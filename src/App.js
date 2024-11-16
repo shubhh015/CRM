@@ -27,7 +27,7 @@ const App = () => {
                 <Route
                     path="/"
                     element={
-                        auth ? (
+                        localStorage.getItem("authToken") ? (
                             <Navigate to="/dashboard" />
                         ) : (
                             <Navigate to="/login" />
