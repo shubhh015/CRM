@@ -222,7 +222,7 @@ const Campaigns = () => {
                                     <TableCell>Actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody sx={{ textAlign: "center" }}>
                                 {campaigns.map((campaign) => (
                                     <TableRow key={campaign._id}>
                                         <TableCell>{campaign.title}</TableCell>
