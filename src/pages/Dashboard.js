@@ -7,6 +7,7 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
 import OpenClosedGraph from "../components/OpenClosedGraph";
 import SentPendingGraph from "../components/SentPendingGraph";
 import { api, getDashboardStats } from "../services/api";
@@ -39,8 +40,8 @@ const Dashboard = () => {
                 let pendingCount = 0;
 
                 campaignsWithCounts.forEach((campaign) => {
-                    openCount += campaign.openCount || 5;
-                    closedCount += campaign.closedCount || 2;
+                    openCount += campaign.openCount || 0;
+                    closedCount += campaign.closedCount || 0;
                     sentCount += campaign.sentCount || 0;
                     pendingCount += campaign.pendingCount || 0;
                 });
@@ -75,6 +76,22 @@ const Dashboard = () => {
         fetchDashboardData();
     }, []);
 
+    const carouselSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 1,
+                },
+            },
+        ],
+    };
+
     return (
         <Container sx={{ maxWidth: "3xl" }}>
             <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
@@ -87,21 +104,24 @@ const Dashboard = () => {
                 </Grid>
             ) : (
                 <>
+                    {/* Active Campaigns Carousel */}
                     {activeCampaigns.length > 0 ? (
-                        activeCampaigns.map((campaign, index) => (
-                            <div key={index}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6">
-                                            {campaign.title}
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            State: {campaign.state}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))
+                        <Slider {...carouselSettings}>
+                            {activeCampaigns.map((campaign, index) => (
+                                <div key={index}>
+                                    <Card sx={{ margin: 2 }}>
+                                        <CardContent>
+                                            <Typography variant="h6">
+                                                {campaign.title}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                State: {campaign.state}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            ))}
+                        </Slider>
                     ) : (
                         <Grid item xs={12}>
                             <Typography variant="body1">

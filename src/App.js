@@ -5,13 +5,13 @@ import {
     BrowserRouter as Router,
     Routes,
 } from "react-router-dom";
+import "./App.css";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import Campaigns from "./pages/Campaigns";
 import Dashboard from "./pages/Dashboard";
 import GoogleLoginPage from "./pages/GoogleLoginPage";
 import SegmentManager from "./pages/Segments";
-
 const App = () => {
     const [auth, setAuth] = useState(false);
 
