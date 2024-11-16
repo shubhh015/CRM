@@ -153,16 +153,25 @@ const Dashboard = () => {
                                                 >
                                                     {campaign.title}
                                                 </Typography>
-                                                <Typography
-                                                    variant="body1"
-                                                    color="green"
-                                                    bgcolor={"#AFE1AF"}
-                                                    borderRadius={5}
-                                                    paddingX={2}
-                                                    paddingY={1}
+                                                <Box
+                                                    sx={{
+                                                        flexDirection: "row",
+                                                        justifyContent:
+                                                            "center",
+                                                        alignItems: "center",
+                                                    }}
                                                 >
-                                                    {campaign.state}
-                                                </Typography>
+                                                    <Typography
+                                                        variant="body1"
+                                                        color="green"
+                                                        bgcolor={"#AFE1AF"}
+                                                        borderRadius={5}
+                                                        paddingX={2}
+                                                        paddingY={1}
+                                                    >
+                                                        {campaign.state}
+                                                    </Typography>
+                                                </Box>
                                             </CardContent>
                                         </Card>
                                     ))}
