@@ -139,7 +139,6 @@ const Dashboard = () => {
                                     {activeCampaigns.map((campaign, index) => (
                                         <Card
                                             key={index}
-                                            elevation={3}
                                             sx={{
                                                 mx: 2,
                                                 p: 3,
