@@ -122,7 +122,6 @@ const Dashboard = () => {
                     </Grid>
                 ) : (
                     <>
-                        {/* Active Campaigns Carousel */}
                         {activeCampaigns.length > 0 ? (
                             <Box sx={{ mb: 4 }}>
                                 <Typography
@@ -157,9 +156,13 @@ const Dashboard = () => {
                                                 </Typography>
                                                 <Typography
                                                     variant="body1"
-                                                    color="textSecondary"
+                                                    color="green"
+                                                    bgcolor={"#AFE1AF"}
+                                                    borderRadius={5}
+                                                    paddingX={2}
+                                                    paddingY={1}
                                                 >
-                                                    State: {campaign.state}
+                                                    {campaign.state}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
