@@ -81,7 +81,8 @@ const Dashboard = () => {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 2,
+
+        slidesToShow: 1,
         slidesToScroll: 1,
         arrows: false,
         responsive: [
@@ -140,6 +141,7 @@ const Dashboard = () => {
                                         <Card
                                             key={index}
                                             sx={{
+                                                mx: 1,
                                                 p: 3,
                                                 textAlign: "start",
                                                 backgroundColor: "white",
