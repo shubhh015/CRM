@@ -428,7 +428,6 @@ const SegmentManager = () => {
                                                             e.target.value
                                                         )
                                                     }
-                                                    label="Field"
                                                 >
                                                     <MenuItem value="totalSpending">
                                                         Total Spending
