@@ -411,6 +411,12 @@ const SegmentManager = () => {
                                             }}
                                         >
                                             <FormControl fullWidth>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mb: 1 }}
+                                                >
+                                                    Field
+                                                </Typography>
                                                 <Select
                                                     value={condition.field}
                                                     placeholder="Field"
@@ -436,6 +442,12 @@ const SegmentManager = () => {
                                                 </Select>
                                             </FormControl>
                                             <FormControl fullWidth>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mb: 1 }}
+                                                >
+                                                    Operator
+                                                </Typography>
                                                 <Select
                                                     value={condition.operator}
                                                     onChange={(e) =>
@@ -468,18 +480,26 @@ const SegmentManager = () => {
                                                     </MenuItem>
                                                 </Select>
                                             </FormControl>
-                                            <TextField
-                                                label="Value"
-                                                value={condition.value}
-                                                onChange={(e) =>
-                                                    handleConditionChange(
-                                                        groupIndex,
-                                                        conditionIndex,
-                                                        "value",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                            <Box>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mb: 1 }}
+                                                >
+                                                    Value
+                                                </Typography>
+                                                <TextField
+                                                    label="Value"
+                                                    value={condition.value}
+                                                    onChange={(e) =>
+                                                        handleConditionChange(
+                                                            groupIndex,
+                                                            conditionIndex,
+                                                            "value",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </Box>
                                             <IconButton
                                                 sx={{ color: "red" }}
                                                 onClick={() =>
