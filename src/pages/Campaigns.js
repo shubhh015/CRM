@@ -312,7 +312,7 @@ const Campaigns = () => {
                         />
                         <Autocomplete
                             options={segments}
-                            getOptionLabel={(option) => option.title}
+                            getOptionLabel={(option) => option.name}
                             onChange={(event, newValue) =>
                                 setSelectedSegment(newValue)
                             }
