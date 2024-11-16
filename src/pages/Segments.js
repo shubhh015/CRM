@@ -383,7 +383,7 @@ const SegmentManager = () => {
                         {groups.map((group, groupIndex) => (
                             <Box key={groupIndex} sx={{ marginBottom: 2 }}>
                                 <FormControl fullWidth>
-                                    <Typography variant="body2">
+                                    <Typography variant="body2" sx={{ mb: 1 }}>
                                         Group Logic
                                     </Typography>
                                     <Select
@@ -410,18 +410,36 @@ const SegmentManager = () => {
                                                 marginY: 2,
                                             }}
                                         >
-                                            <TextField
-                                                label="Field"
-                                                value={condition.field}
-                                                onChange={(e) =>
-                                                    handleConditionChange(
-                                                        groupIndex,
-                                                        conditionIndex,
-                                                        "field",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                            <FormControl fullWidth>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mb: 1 }}
+                                                >
+                                                    Field
+                                                </Typography>
+                                                <Select
+                                                    value={condition.field}
+                                                    onChange={(e) =>
+                                                        handleConditionChange(
+                                                            groupIndex,
+                                                            conditionIndex,
+                                                            "field",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    label="Field"
+                                                >
+                                                    <MenuItem value="totalSpending">
+                                                        Total Spending
+                                                    </MenuItem>
+                                                    <MenuItem value="visits">
+                                                        Visits
+                                                    </MenuItem>
+                                                    <MenuItem value="lastVisit">
+                                                        Last Visit
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
                                             <TextField
                                                 label="Operator"
                                                 value={condition.operator}
