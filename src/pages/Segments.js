@@ -411,14 +411,9 @@ const SegmentManager = () => {
                                             }}
                                         >
                                             <FormControl fullWidth>
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{ mb: 1 }}
-                                                >
-                                                    Field
-                                                </Typography>
                                                 <Select
                                                     value={condition.field}
+                                                    placeholder="Field"
                                                     onChange={(e) =>
                                                         handleConditionChange(
                                                             groupIndex,
