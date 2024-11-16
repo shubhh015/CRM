@@ -359,8 +359,8 @@ const SegmentManager = () => {
                     aria-label="add"
                     sx={{
                         position: "fixed",
-                        bottom: 16,
-                        right: 16,
+                        bottom: 56,
+                        right: 56,
                     }}
                     onClick={() => setOpenForm(true)}
                 >
