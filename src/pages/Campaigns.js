@@ -43,10 +43,12 @@ const Campaigns = () => {
     const [loadingSegments, setLoadingSegments] = useState(false); // Loader state for segments
     const navigate = useNavigate();
     const [openAlert, setOpenAlert] = useState(false);
-
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user ? user.id : null;
-
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCampaigns, setTotalCampaigns] = useState(0);
     const formatDate = (date) => {
         const newDate = new Date(date);
         return newDate.toLocaleDateString("en-GB");
@@ -68,9 +70,16 @@ const Campaigns = () => {
                 try {
                     setLoading(true);
                     const response = await api.get(`/campaigns/past`, {
-                        params: { userId },
+                        params: {
+                            userId,
+                            page,
+                            limit,
+                        },
                     });
+
                     setCampaigns(response.data.campaigns);
+                    setTotalPages(response.data.pagination.totalPages);
+                    setTotalCampaigns(response.data.pagination.totalCampaigns);
                 } catch (error) {
                     handleError(error);
                 } finally {
