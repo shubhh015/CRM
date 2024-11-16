@@ -128,6 +128,7 @@ const Dashboard = () => {
                                     variant="h5"
                                     sx={{
                                         mb: 2,
+
                                         textAlign: "center",
                                         color: "secondary.main",
                                     }}
@@ -139,9 +140,9 @@ const Dashboard = () => {
                                         <Card
                                             key={index}
                                             sx={{
-                                                mx: 2,
+                                                mx: 3,
                                                 p: 3,
-                                                textAlign: "center",
+                                                textAlign: "start",
                                                 backgroundColor: "white",
                                             }}
                                         >
