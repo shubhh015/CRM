@@ -141,7 +141,6 @@ const Dashboard = () => {
                                         <Card
                                             key={index}
                                             sx={{
-                                                mx: 1,
                                                 p: 3,
                                                 textAlign: "start",
                                                 backgroundColor: "white",
