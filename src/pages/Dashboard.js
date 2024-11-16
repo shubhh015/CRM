@@ -83,7 +83,7 @@ const Dashboard = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        arrows: true,
+        arrows: false,
         responsive: [
             {
                 breakpoint: 600,
@@ -140,7 +140,6 @@ const Dashboard = () => {
                                         <Card
                                             key={index}
                                             sx={{
-                                                mx: 3,
                                                 p: 3,
                                                 textAlign: "start",
                                                 backgroundColor: "white",
@@ -158,13 +157,11 @@ const Dashboard = () => {
                                                     sx={{
                                                         display: "flex",
                                                         flexDirection: "row",
-                                                        justifyContent:
-                                                            "center",
-                                                        alignItems: "center",
+                                                        justifyContent: "start",
                                                     }}
                                                 >
                                                     <Typography
-                                                        variant="body1"
+                                                        variant="body2"
                                                         color="green"
                                                         bgcolor={"#AFE1AF"}
                                                         borderRadius={5}
