@@ -22,7 +22,7 @@ const App = () => {
         };
 
         window.addEventListener("storage", handleStorageChange);
-        console.log("change in the local storage");
+
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
@@ -30,7 +30,7 @@ const App = () => {
 
     return (
         <Router>
-            {!!localStorage.getItem("authToken") && <Navbar />}
+            <Navbar />
             <Routes>
                 <Route
                     path="/"
