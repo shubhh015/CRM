@@ -40,12 +40,10 @@ const Dashboard = () => {
                 let sentCount = 0;
                 let pendingCount = 0;
 
-                campaignsWithCounts.forEach((campaign) => {
-                    openCount += campaign.openCount || 0;
-                    closedCount += campaign.closedCount || 0;
-                    sentCount += campaign.sentCount || 0;
-                    pendingCount += campaign.pendingCount || 0;
-                });
+                openCount += campaignsWithCounts.openCount || 0;
+                closedCount += campaignsWithCounts.closedCount || 0;
+                sentCount += campaignsWithCounts.sentCount || 0;
+                pendingCount += campaignsWithCounts.pendingCount || 0;
 
                 setStatistics({
                     totalCustomers: statsResponse.data.totalCustomers,
