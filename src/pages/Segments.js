@@ -435,18 +435,39 @@ const SegmentManager = () => {
                                                     </MenuItem>
                                                 </Select>
                                             </FormControl>
-                                            <TextField
-                                                label="Operator"
-                                                value={condition.operator}
-                                                onChange={(e) =>
-                                                    handleConditionChange(
-                                                        groupIndex,
-                                                        conditionIndex,
-                                                        "operator",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                            <FormControl fullWidth>
+                                                <Select
+                                                    value={condition.operator}
+                                                    onChange={(e) =>
+                                                        handleConditionChange(
+                                                            groupIndex,
+                                                            conditionIndex,
+                                                            "operator",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Operator"
+                                                >
+                                                    <MenuItem value="">
+                                                        Select Operator
+                                                    </MenuItem>
+                                                    <MenuItem value=">">
+                                                        Greater than{" "}
+                                                    </MenuItem>
+                                                    <MenuItem value="<">
+                                                        Less than{" "}
+                                                    </MenuItem>
+                                                    <MenuItem value=">=">
+                                                        Greater than or equal to{" "}
+                                                    </MenuItem>
+                                                    <MenuItem value="<=">
+                                                        Less than or equal to{" "}
+                                                    </MenuItem>
+                                                    <MenuItem value="=">
+                                                        Equal to{" "}
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
                                             <TextField
                                                 label="Value"
                                                 value={condition.value}
