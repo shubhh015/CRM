@@ -66,7 +66,7 @@ const Campaigns = () => {
         const fetchCampaigns = async () => {
             if (userId) {
                 try {
-                    setLoading(true); // Start loading
+                    setLoading(true);
                     const response = await api.get(`/campaigns/past`, {
                         params: { userId },
                     });
@@ -74,7 +74,7 @@ const Campaigns = () => {
                 } catch (error) {
                     handleError(error);
                 } finally {
-                    setLoading(false); // Stop loading
+                    setLoading(false);
                 }
             }
         };
@@ -165,8 +165,17 @@ const Campaigns = () => {
     };
 
     return (
-        <Container sx={{ paddingBottom: 3 }}>
-            <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
+        <Container sx={{ paddingBottom: 3, backgroundColor: "#f0f4f8" }}>
+            <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
+                    marginY: 3,
+                    textAlign: "center",
+                    color: "#3f51b5",
+                    fontWeight: "bold",
+                }}
+            >
                 My Campaigns
             </Typography>
 
@@ -182,7 +191,7 @@ const Campaigns = () => {
                     </Button>
                 </Typography>
             ) : (
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -246,7 +255,12 @@ const Campaigns = () => {
             <Fab
                 color="primary"
                 aria-label="add"
-                sx={{ position: "fixed", bottom: 56, right: 52 }}
+                sx={{
+                    position: "fixed",
+                    bottom: 56,
+                    right: 52,
+                    backgroundColor: "#3f51b5",
+                }}
                 onClick={handleOpenModal}
             >
                 <AddIcon />
@@ -261,13 +275,17 @@ const Campaigns = () => {
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                         width: 400,
-                        bgcolor: "background.paper",
+                        bgcolor: "#ffffff",
                         boxShadow: 24,
                         p: 4,
                         borderRadius: 2,
                     }}
                 >
-                    <Typography variant="h6" gutterBottom>
+                    <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ color: "#3f51b5", fontWeight: "bold" }}
+                    >
                         Create New Campaign
                     </Typography>
                     <TextField
@@ -290,7 +308,13 @@ const Campaigns = () => {
                     <Button
                         variant="contained"
                         fullWidth
-                        sx={{ marginY: 2 }}
+                        sx={{
+                            marginY: 2,
+                            backgroundColor: "#3f51b5",
+                            "&:hover": {
+                                backgroundColor: "#303f9f",
+                            },
+                        }}
                         onClick={handleCreateCampaign}
                     >
                         Create Campaign

@@ -1,5 +1,4 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
     Alert,
@@ -8,15 +7,12 @@ import {
     CircularProgress,
     Container,
     Fab,
-    FormControl,
     Grid,
     IconButton,
-    InputLabel,
     Menu,
     MenuItem,
     Modal,
     Paper,
-    Select,
     Snackbar,
     Table,
     TableBody,
@@ -197,33 +193,64 @@ const SegmentManager = () => {
     }
 
     return (
-        <Container sx={{ paddingBottom: 3 }}>
-            <Typography variant="h4" gutterBottom sx={{ marginY: 3 }}>
+        <Container sx={{ paddingBottom: 3, backgroundColor: "#f9fafb" }}>
+            <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
+                    marginY: 3,
+                    fontWeight: 600,
+                    color: "#3f51b5",
+                }}
+            >
                 My Segments
             </Typography>
 
             {noSegments ? (
-                <Typography variant="body1" sx={{ marginY: 2 }}>
+                <Typography
+                    variant="body1"
+                    sx={{
+                        marginY: 2,
+                        color: "#4f5b62",
+                    }}
+                >
                     No segment found.{" "}
                     <Button onClick={() => setOpenForm(true)} color="primary">
                         Create a New Segment
                     </Button>
                 </Typography>
             ) : (
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Segment Name</TableCell>
-                                <TableCell>Conditions</TableCell>
-                                <TableCell>Audience Size</TableCell>
-                                <TableCell>Created At</TableCell>
-                                <TableCell>Actions</TableCell>
+                                <TableCell sx={{ fontWeight: "bold" }}>
+                                    Segment Name
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: "bold" }}>
+                                    Conditions
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: "bold" }}>
+                                    Audience Size
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: "bold" }}>
+                                    Created At
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: "bold" }}>
+                                    Actions
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {segments.map((segment) => (
-                                <TableRow key={segment._id}>
+                                <TableRow
+                                    key={segment._id}
+                                    sx={{
+                                        "&:nth-of-type(odd)": {
+                                            backgroundColor: "#f5f5f5",
+                                        },
+                                    }}
+                                >
                                     <TableCell>{segment.name}</TableCell>
                                     <TableCell>
                                         {segment.conditions.map(
@@ -306,150 +333,98 @@ const SegmentManager = () => {
                 </TableContainer>
             )}
 
+            <Fab
+                color="primary"
+                aria-label="add"
+                sx={{
+                    position: "fixed",
+                    bottom: 16,
+                    right: 16,
+                }}
+                onClick={() => setOpenForm(true)}
+            >
+                <AddIcon />
+            </Fab>
+
             <Modal open={openForm} onClose={() => setOpenForm(false)}>
                 <Box
                     sx={{
-                        padding: 4,
-                        margin: "auto",
-                        maxWidth: 600,
-                        backgroundColor: "white",
-                        marginTop: "5%",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "#fff",
+                        padding: 3,
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        width: 400,
                     }}
                 >
-                    <Typography variant="h6">
-                        {editingSegment ? "Edit Segment" : "Create New Segment"}
+                    <Typography variant="h6" gutterBottom>
+                        {editingSegment ? "Edit Segment" : "Create Segment"}
                     </Typography>
                     <TextField
-                        fullWidth
                         label="Segment Name"
+                        variant="outlined"
+                        fullWidth
                         value={segmentName}
                         onChange={(e) => setSegmentName(e.target.value)}
-                        sx={{ marginY: 2 }}
+                        sx={{ marginBottom: 2 }}
                     />
-
-                    {groups.map((group, groupIndex) => (
-                        <Box key={groupIndex} sx={{ marginBottom: 2 }}>
-                            <FormControl fullWidth>
-                                <InputLabel>Group Logic</InputLabel>
-                                <Select
-                                    value={group.logic}
-                                    onChange={(e) =>
-                                        handleGroupLogicChange(
-                                            groupIndex,
-                                            e.target.value
-                                        )
-                                    }
-                                >
-                                    <MenuItem value="AND">AND</MenuItem>
-                                    <MenuItem value="OR">OR</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {group.conditions.map(
-                                (condition, conditionIndex) => (
-                                    <Box
-                                        key={conditionIndex}
-                                        sx={{ display: "flex", gap: 2 }}
-                                    >
-                                        <TextField
-                                            label="Field"
-                                            value={condition.field}
-                                            onChange={(e) =>
-                                                handleConditionChange(
-                                                    groupIndex,
-                                                    conditionIndex,
-                                                    "field",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                        <TextField
-                                            label="Operator"
-                                            value={condition.operator}
-                                            onChange={(e) =>
-                                                handleConditionChange(
-                                                    groupIndex,
-                                                    conditionIndex,
-                                                    "operator",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                        <TextField
-                                            label="Value"
-                                            value={condition.value}
-                                            onChange={(e) =>
-                                                handleConditionChange(
-                                                    groupIndex,
-                                                    conditionIndex,
-                                                    "value",
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                        <IconButton
-                                            onClick={() =>
-                                                handleRemoveCondition(
-                                                    groupIndex,
-                                                    conditionIndex
-                                                )
-                                            }
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Box>
-                                )
-                            )}
-
-                            <Box sx={{ display: "flex", gap: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() =>
-                                        handleAddCondition(groupIndex)
-                                    }
-                                    sx={{ marginY: 2 }}
-                                >
-                                    Add Condition
-                                </Button>
-                                <IconButton
-                                    onClick={() =>
-                                        handleRemoveGroup(groupIndex)
-                                    }
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Box>
-                        </Box>
-                    ))}
-
+                    {/* Add form elements for conditions and logic */}
                     <Button
+                        fullWidth
                         variant="contained"
                         color="primary"
-                        onClick={handleAddGroup}
+                        onClick={createOrUpdateSegment}
+                        disabled={loadingSegmentAction}
                     >
-                        Add Group
+                        {loadingSegmentAction ? (
+                            <CircularProgress size={24} />
+                        ) : (
+                            "Save Segment"
+                        )}
                     </Button>
+                </Box>
+            </Modal>
 
-                    <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setOpenForm(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={createOrUpdateSegment}
-                            disabled={loadingSegmentAction}
-                        >
-                            {loadingSegmentAction ? (
-                                <CircularProgress size={24} />
-                            ) : (
-                                "Save"
-                            )}
-                        </Button>
-                    </Box>
+            {/* Delete Confirmation Modal */}
+            <Modal
+                open={openDeleteModal}
+                onClose={() => setOpenDeleteModal(false)}
+            >
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "#fff",
+                        padding: 3,
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        width: 400,
+                    }}
+                >
+                    <Typography variant="h6" gutterBottom>
+                        Are you sure you want to delete this segment?
+                    </Typography>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={confirmDeleteSegment}
+                        fullWidth
+                        sx={{ marginBottom: 2 }}
+                    >
+                        Delete
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => setOpenDeleteModal(false)}
+                        fullWidth
+                    >
+                        Cancel
+                    </Button>
                 </Box>
             </Modal>
 
@@ -458,61 +433,10 @@ const SegmentManager = () => {
                 autoHideDuration={6000}
                 onClose={() => setOpenAlert(false)}
             >
-                <Alert severity="error" sx={{ width: "100%" }}>
-                    Segment name is required!
+                <Alert severity="warning" sx={{ width: "100%" }}>
+                    Please enter a segment name.
                 </Alert>
             </Snackbar>
-
-            <Modal
-                open={openDeleteModal}
-                onClose={() => setOpenDeleteModal(false)}
-            >
-                <Paper
-                    style={{
-                        padding: 20,
-                        margin: "auto",
-                        marginTop: "20%",
-                        maxWidth: 400,
-                    }}
-                >
-                    <Typography variant="h6">Confirm Deletion</Typography>
-                    <Typography variant="body1">
-                        Are you sure you want to delete this segment?
-                    </Typography>
-                    <div
-                        style={{
-                            marginTop: 20,
-                            display: "flex",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={confirmDeleteSegment}
-                        >
-                            Yes
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setOpenDeleteModal(false)}
-                        >
-                            No
-                        </Button>
-                    </div>
-                </Paper>
-            </Modal>
-            <Fab
-                color="primary"
-                aria-label="add"
-                sx={{ position: "fixed", bottom: 56, right: 52 }}
-                onClick={() => {
-                    setEditingSegment(null);
-                    setOpenForm(true);
-                }}
-            >
-                <AddIcon />
-            </Fab>
         </Container>
     );
 };
